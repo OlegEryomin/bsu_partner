@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="blocks/bsu_partner/db" VERSION="20250115" COMMENT="Партнеры НИУ &quot;БелГУ&quot;"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="bsu_partner" COMMENT="Справочник партнеров" NEXT="bsu_partner_departments">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="name"/>
+        <FIELD NAME="inn" TYPE="char" LENGTH="50" NOTNULL="true" SEQUENCE="false" COMMENT="ИНН партнера" NEXT="name"/>
+        <FIELD NAME="namepartner" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Наименование партнера" PREVIOUS="inn" NEXT="site_url"/>
+        <FIELD NAME="site_url" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Web сайт партнера" PREVIOUS="name" NEXT="info"/>
+        <FIELD NAME="info" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="site_url" NEXT="departments"/>
+        <FIELD NAME="departments" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Подразделения, партнеры" PREVIOUS="info" NEXT="isnotresident"/>
+        <FIELD NAME="isnotresident" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Резидент РФ - 0; Нерезидент РФ - 1" PREVIOUS="departments"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="bsu_partner_departments" COMMENT="Подразделения университета" PREVIOUS="bsu_partner" NEXT="bsu_partner_questions">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="namedepartment"/>
+        <FIELD NAME="namedepartment" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Наименование подразделения" PREVIOUS="id" NEXT="guid"/>
+        <FIELD NAME="guid" TYPE="char" LENGTH="36" NOTNULL="false" SEQUENCE="false" COMMENT="GUID из 1С ЗиК" PREVIOUS="namedepartment" NEXT="managers"/>
+        <FIELD NAME="managers" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="guid"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="bsu_partner_questions" COMMENT="Вопросы для анкеты" PREVIOUS="bsu_partner_departments" NEXT="bsu_partner_anketa">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="namequestion"/>
+        <FIELD NAME="namequestion" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="id" NEXT="partnerid"/>
+        <FIELD NAME="parentid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" PREVIOUS="namequestion" NEXT="typequestion"/>
+        <FIELD NAME="typequestion" TYPE="char" LENGTH="50" NOTNULL="true" DEFAULT="textarea" SEQUENCE="false" COMMENT="Тип вопроса (текст, выпадающий список)" PREVIOUS="parentid" NEXT="description"/>
+        <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="typequestion"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="fk_partnerid"/>
+        <KEY NAME="fk_parentid" TYPE="foreign" FIELDS="parentid" REFTABLE="bsu_partner_questions" REFFIELDS="id" PREVIOUS="primary"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="bsu_partner_anketa" COMMENT="Анкеты подразделений" PREVIOUS="bsu_partner_questions">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="partnerid"/>
+        <FIELD NAME="partnerid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="depid"/>
+        <FIELD NAME="depid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="partnerid" NEXT="questionid"/>
+        <FIELD NAME="questionid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="depid" NEXT="value"/>
+        <FIELD NAME="value" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="questionid"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="fk_partnerid"/>
+        <KEY NAME="fk_partnerid" TYPE="foreign" FIELDS="partnerid" REFTABLE="bsu_partner" REFFIELDS="id" PREVIOUS="primary" NEXT="fk_depid"/>
+        <KEY NAME="fk_depid" TYPE="foreign" FIELDS="depid" REFTABLE="bsu_partner_departments" REFFIELDS="id" PREVIOUS="fk_partnerid" NEXT="fk_questionid"/>
+        <KEY NAME="fk_questionid" TYPE="foreign" FIELDS="questionid" REFTABLE="bsu_partner_questions" REFFIELDS="id" PREVIOUS="fk_depid"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>
