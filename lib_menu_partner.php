@@ -15,6 +15,7 @@ function get_items_menu_bsu_partner(&$items)
     }
     if (has_capability('block/bsu_partner:viewdepartments', $context) || is_siteadmin()){
         array_push($index_items, 'ref_departments');
+        array_push($index_items, 'report');
     }
     if (has_capability('block/bsu_partner:viewquestions', $context) || is_siteadmin()){
         array_push($index_items, 'questions');
@@ -28,6 +29,10 @@ function get_items_menu_bsu_partner(&$items)
     $name = 'department';
     $icons = html_writer::empty_tag('img', array('src' => $OUTPUT->pix_url('i/journal'), 'class' => 'icon'));
     $items[$name] = html_writer::link($CFG->wwwroot . '/blocks/bsu_partner/partners_department.php', $icons . 'Дорожная карта');
+
+    $name = 'report';
+    $icons = html_writer::empty_tag('img', array('src' => $OUTPUT->pix_url('i/report'), 'class' => 'icon'));
+    $items[$name] = html_writer::link($CFG->wwwroot . '/blocks/bsu_partner/report.php', $icons . 'Отчёт');
 
     $name = 'ref_departments';
     $icons = html_writer::empty_tag('img', array('src' => $OUTPUT->pix_url('i/db'), 'class' => 'icon'));

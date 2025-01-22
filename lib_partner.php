@@ -73,6 +73,16 @@ function getDepartmentName($id)
 
 }
 
+function getDepartmentsName($ids) {
+    foreach (explode(',', $ids) as $id) {
+         $depnames[] = getDepartmentName($id);
+    }
+
+    $depnames = implode(',', $depnames);
+
+    return $depnames;
+}
+
 
 /**
  * @return array Возвращает массив id => наименование подразделений на которые есть права на добавления партнера
@@ -223,6 +233,7 @@ function displayTree(array $tree, $level, $mform)
 }
 
 
+
 function getParentid($id)
 {
     global $DB;
@@ -300,4 +311,10 @@ function getAnketa($partnerid, $depid)
     global $DB, $OUTPUT;
 
     return $DB->get_records_menu('bsu_partner_anketa', ['partnerid' => $partnerid, 'depid' => $depid], null, 'questionid,	value');
+}
+
+function getDepartmentsPartner($partnerid) {
+    global $DB;
+
+    return $DB->get_field('bsu_partner', 'departments', ['id' => $partnerid]);
 }
